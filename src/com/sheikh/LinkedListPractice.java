@@ -15,13 +15,13 @@ public class LinkedListPractice {
     }
 
     public LinkedListPractice() {
-        String seq;
+        /*String seq;
         String s1;
         String s2;
         ListNode l1;
         ListNode l2;
         ListNode h1;
-        ListNode h2;
+        ListNode h2;*/
 
         /*l1 = h1 = new ListNode(4);
         l1 = l1.next = new ListNode(7);
@@ -80,7 +80,7 @@ public class LinkedListPractice {
         System.out.println(majorityElement(new int[]{2, 3, 4, 2}));
         */
 
-        /*Linked List Cycle*/
+        /*Linked List Cycle
         l1 = new ListNode(1);
         l2 = new ListNode(2);
         l1.next = l2;
@@ -94,7 +94,7 @@ public class LinkedListPractice {
 
         //System.out.println(this.hasCycle(l1));
         System.out.println(this.detectCycle(l1));
-        /**/
+        */
 
         /*Palindrome Linked List
         ListNode node = ListNode.getListNode(new int[] {1, 2, 5, 2, 1});
@@ -127,21 +127,116 @@ public class LinkedListPractice {
         //this.printLinkedList(oddEvenList(ListNode.getListNode(new int[] {1, 2,3 ,4})));
 
         /*Copy List with Random Pointer
-        RandomListNode head = new RandomListNode(1);
-        RandomListNode rand = copyRandomList(head);
+        copyRandomList(null);
+        RandomListNode head2, h1;
+        head2 = h1 = new RandomListNode(1);
+        copyRandomList(head2);
         RandomListNode h2 = new RandomListNode(2);
-        head.next = h2;
+        h1.next = h2;
         RandomListNode h3 = new RandomListNode(3);
-        RandomListNode h4 = new RandomListNode(4);
         h2.next = h3;
+        RandomListNode h4 = new RandomListNode(4);
         h3.next = h4;
         h4.next = null;
-        head.random = h4;
-        h2.random = head;
-        h3.random = h4;
-        //RandomListNode rand = copyRandomList(head);
-
+        h1.random = h3;
+        h2.random = h4;
+        h3.random = h2;
+        h4.random = h1;
+        RandomListNode rand2 = copyRandomList(head2);
         */
+        ListNode node = ListNode.getListNode(new int[] {});
+        node = reverseBetween(node, 1, 4);
+    }
+
+    public ListNode reverseBetween(ListNode head, int m, int n) {
+        if (head == null || head.next == null || m == n) return head;
+        int count = n - m + 1;
+
+        ListNode h1 = null, c = head;
+        // put h1 to m - 1 position and c to m position
+        while (m-- > 1) {
+            h1 = c;
+            c = c.next;
+        }
+
+        if (c.next == null) return head;
+
+        ListNode h2 = c;
+
+        ListNode next = c.next;
+        c.next = null;
+        while (--count != 0 && next != null) {
+            ListNode tmp = next.next;
+            next.next = c;
+            c = next;
+            next = tmp;
+        }
+
+        // after the loop, c will be at n and next at n + 1 position
+        if (h1 != null)
+            h1.next = c;
+        else head = c;
+        h2.next = next;
+
+        return head;
+    }
+
+    public RandomListNode copyRandomList(RandomListNode head) {
+        if (head == null) return head;
+        RandomListNode cur = head;
+
+        // copy the list
+        while (cur != null) {
+            RandomListNode node = new RandomListNode(cur.label);
+            node.next = cur.next;
+            cur.next = node;
+            cur = node.next;
+        }
+
+        // assign random pointer of copied list
+        RandomListNode orig = head;
+        while (orig != null) {
+            orig.next.random = orig.random == null ? null : orig.random.next;
+            orig = orig.next.next;
+        }
+
+        // repair nex pointers
+        RandomListNode cur1 = head, copyHead = head.next, cur2 = head.next;
+        while (cur2 != null) {
+            cur1.next = cur2.next;
+            cur2.next = cur2.next == null ? null : cur2.next.next;
+            cur1 = cur1.next;
+            cur2 = cur2.next;
+        }
+        return copyHead;
+    }
+
+    public RandomListNode copyRandomList4(RandomListNode head) {
+        RandomListNode headOrig = head;
+        RandomListNode headCopy = null, cur = null;
+        HashMap<RandomListNode, RandomListNode> orig2copy = new HashMap<>();
+        HashMap<RandomListNode, RandomListNode> copy2orig = new HashMap<>();
+        while (head != null) {
+            RandomListNode node = new RandomListNode(head.label);
+            if (cur == null) {
+                cur = headCopy = node;
+            } else {
+                cur.next = node;
+                cur = node;
+            }
+
+            orig2copy.put(head, node);
+            copy2orig.put(node, head);
+            head = head.next;
+        }
+
+        cur = headCopy;
+        while (cur != null) {
+            cur.random = orig2copy.get(copy2orig.get(cur).random);
+            cur = cur.next;
+        }
+
+        return headCopy;
     }
 
     public ListNode detectCycle(ListNode head) {
@@ -165,7 +260,7 @@ public class LinkedListPractice {
         return head;
     }
 
-    public RandomListNode copyRandomList(RandomListNode head) {
+    public RandomListNode copyRandomList3(RandomListNode head) {
         if (head == null) return null;
 
         Hashtable<RandomListNode, RandomListNode> table = new Hashtable<>();

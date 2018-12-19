@@ -1,10 +1,9 @@
 package com.sheikh;
 
 import java.util.Stack;
-import com.sheikh.TreePractice.TreeNode;
 
 public class BSTIterator {
-    private Stack<TreePractice.TreeNode> stack;
+    private Stack<TreeNode> stack;
 
     public BSTIterator(TreeNode root) {
         stack = new Stack<>();
@@ -12,7 +11,7 @@ public class BSTIterator {
     }
 
     public boolean hasNext() {
-        return stack.isEmpty() ? false : true;
+        return !stack.isEmpty();
     }
 
     public int next() {

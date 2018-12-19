@@ -55,7 +55,7 @@ public class Utils {
 		return sb.toString();
 	}
 
-	public static void printList(List<List<Integer>> lists) {
+	public static void printListOfList(List<List<Integer>> lists) {
 		StringBuilder ret = new StringBuilder();
 		for (List<Integer> list : lists) {
 			StringBuilder sb = new StringBuilder();
@@ -68,6 +68,14 @@ public class Utils {
 		}
 
 		System.out.println(ret.toString());
+	}
+
+	public static void printList(List<Integer> list) {
+		StringBuilder sb = new StringBuilder();
+	    for (int i : list) {
+	    	sb.append(i + " ");
+		}
+		System.out.println(sb.toString());
 	}
 
 	public static int[][] genMatrix(int n) {

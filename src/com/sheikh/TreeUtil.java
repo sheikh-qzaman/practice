@@ -21,6 +21,30 @@ public class TreeUtil {
 		createLinkedListPerLevel(myTree, list, 0);
 	}
 
+	public static TreeNode createTree(int[] tree, int i) {
+		TreeNode node = null;
+		if (i >= tree.length) return null;
+		else if (tree[i] == -1) return null;
+		else {
+			node = new TreeNode(tree[i]);
+			node.left = createTree(tree, 2 * i + 1);
+			node.right = createTree(tree, 2 * i + 2);
+		}
+		return node;
+	}
+
+	public static TreeLinkNode createTreeLink(int[] tree, int i) {
+		TreeLinkNode node = null;
+		if (i >= tree.length) return null;
+		else if (tree[i] == -1) return null;
+		else {
+			node = new TreeLinkNode(tree[i]);
+			node.left = createTreeLink(tree, 2 * i + 1);
+			node.right = createTreeLink(tree, 2 * i + 2);
+		}
+		return node;
+	}
+
 	public void insertItem(BinaryTreeNode<Integer> node,
 						   ArrayList<LinkedList<BinaryTreeNode<Integer>>> list, int level) {
 		try {

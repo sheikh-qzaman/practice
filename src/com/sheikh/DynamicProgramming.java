@@ -2,6 +2,7 @@ package com.sheikh;
 
 import java.time.Instant;
 import java.util.*;
+import java.util.LinkedList;
 
 
 /**
@@ -203,11 +204,168 @@ public class DynamicProgramming {
         String s = "aaab";
         String[] sArr = new String[]{"a", "ab"};
         //System.out.println(wordBreak("aaaaaaaaaaaaaaaaaaaaaaaaaaaab", new ArrayList<String>(Arrays.asList(new String[] {"a","aa","aaa","aaaa","aaaaa","aaaaaa","aaaaaaa","aaaaaaaa","aaaaaaaaa","aaaaaaaaaa"}))));
-        System.out.println(wordBreak(s, new ArrayList<String>(Arrays.asList(sArr))));
+        //System.out.println(wordBreak(s, new ArrayList<String>(Arrays.asList(sArr))));
         //System.out.println(Instant.now());
         //String s = "aabaablbb";
         //System.out.println(lengthOfLongestSubstring(s));
         //System.out.println(longestPalindrome("bcab"));
+        this.initialize(11);
+        //System.out.println(coinChange(new int[]{1, 2, 5}, 11));
+
+        //List<String> list = generateParenthesis(2);
+        //System.out.println(uniquePathsWithObstacles(board));
+        int[][] board = {
+                {1}
+        };
+        System.out.println(minPathSum(board));
+    }
+
+    public int minPathSum(int[][] grid) {
+        int[][] tab = new int[grid.length][grid[0].length];
+        for (int r = grid.length - 1; r >= 0; r--) {
+            for (int c = grid[0].length - 1; c >= 0; c--) {
+                if (r == grid.length - 1 && c == grid[0].length - 1) tab[r][c] = grid[r][c];
+                else {
+                    if (r + 1 == grid.length) tab[r][c] = tab[r][c + 1];
+                    else if (c + 1 == grid[0].length) tab[r][c] = tab[r + 1][c];
+                    else tab[r][c] = Math.min(tab[r + 1][c], tab[r][c + 1]);
+                    tab[r][c] += grid[r][c];
+                    //tab[r][c] = grid[r][c] + ((r + 1 == grid.length) ? tab[r][c + 1] :
+                    //        (c + 1 == grid[0].length ? tab[r + 1][c] : Math.min(tab[r + 1][c], tab[r][c + 1])));
+                }
+            }
+        }
+
+        return tab[0][0];
+    }
+
+    public int uniquePathsWithObstacles(int[][] obstacleGrid) {
+        return uniquePWOD(obstacleGrid);
+        //return uniquePWO(obstacleGrid, 0, 0);
+    }
+
+    public int uniquePWOD(int[][] board) {
+        if (board == null || board.length == 0) return 0;
+        int[][] memoTab = new int[board.length][board[0].length];
+        for (int r = board.length - 1; r >= 0; r--) {
+            for (int c = board[0].length - 1; c >= 0; c--) {
+                if (board[r][c] == 1) memoTab[r][c] = 0;
+                else if (r == board.length -1 && c == board[0].length - 1) memoTab[r][c] = 1;
+                else {
+                    int bottom = r + 1 < memoTab.length ? memoTab[r + 1][c] : 0;
+                    int right = c + 1 < memoTab[0].length ? memoTab[r][c + 1] : 0;
+                    memoTab[r][c] =  bottom + right;
+                }
+            }
+        }
+
+        return memoTab[0][0];
+    }
+
+    public int uniquePWO(int[][] board, int r, int c) {
+        if (r >= board.length || c >= board[0].length)
+            return 0;
+        else if (board[r][c] == 1) {
+            memoGrid[r][c] = 0;
+            return 0;
+        }
+        else if (r == board.length - 1 && c == board[0].length - 1) {
+            memoGrid[r][c] = 1;
+            return 1;
+        }
+        else {
+            return (r + 1 >= board.length ? 0 : ((memoGrid[r + 1][c] == -1) ? uniquePWO(board, r + 1, c) : memoGrid[r + 1][c])) +
+                    (c + 1 >= board[0].length ? 0 : ((memoGrid[r][c + 1] == -1) ? uniquePWO(board, r, c + 1) : memoGrid[r][c + 1]));
+        }
+    }
+
+    public List<String> generateParenthesis(int n) {
+        List<String> combinations = new ArrayList();
+        System.out.println();
+        long a = new Date().getTime();
+        generateAll(new char[2 * n], 0, combinations);
+        long b = new Date().getTime();
+        System.out.println(b - a);
+        a = new Date().getTime();
+        //backtrack(combinations, "", 0, 0, n);
+        b = new Date().getTime();
+        backTrack(combinations, "",0, 0, n);
+        System.out.println(b - a);
+        return combinations;
+    }
+
+    public void backTrack(List<String> res, String cur, int open, int close, int n) {
+        if (cur.length() == 2 * n) {
+            res.add(new String(cur));
+        }
+
+        if (open < n) {
+            backTrack(res, cur + "(", open + 1, close, n);
+        }
+        if (close < open) {
+            backTrack(res, cur + ")" , open, close + 1, n);
+        }
+    }
+
+    public void generateAll(char[] current, int pos, List<String> result) {
+        if (pos == current.length) {
+            if (valid(current))
+                result.add(new String(current));
+        } else {
+            current[pos] = '(';
+            generateAll(current, pos+1, result);
+            current[pos] = ')';
+            generateAll(current, pos+1, result);
+        }
+    }
+
+    public boolean valid(char[] current) {
+        int balance = 0;
+        for (char c: current) {
+            if (c == '(') balance++;
+            else balance--;
+            if (balance < 0) return false;
+        }
+        return (balance == 0);
+    }
+
+    public int coinChange(int[] coins, int amount) {
+        /*int[] memoArr = new int[amount];
+        for (int i = 0; i < memoArr.length; i++) {
+            memoArr[i] = -1;
+        }*/
+        //return coinChangeRecur(coins, amount);
+
+        return coinChangeMem(coins, amount, new int[amount]);
+    }
+
+    public int coinChangeRecur(int[] coins, int amount) {
+        if (amount == 0) return 0;
+        else if (amount < 0) return Integer.MAX_VALUE;
+        else {
+            int cost = Integer.MAX_VALUE;
+            for (int coin : coins) {
+                int curCost = coinChangeRecur(coins, amount - coin);
+                cost = Math.min(cost, (curCost == Integer.MAX_VALUE ? Integer.MAX_VALUE : 1 + curCost));
+            }
+
+            return cost;
+        }
+    }
+
+    public int coinChangeMem(int[] coins, int amount, int[] memoArr) {
+        if (amount == 0) return 0;
+        else if (amount < 0) return -1;
+        else if (memoArr[amount - 1] != 0) return memoArr[amount - 1];
+        else {
+            int minCost = Integer.MAX_VALUE;
+            for (int coin : coins) {
+                int curCost = coinChangeMem(coins, amount - coin, memoArr);
+                minCost = curCost < minCost ? 1 + curCost : minCost;
+            }
+            memoArr[amount - 1] = (minCost == Integer.MAX_VALUE) ? -1 : minCost;
+            return memoArr[amount - 1];
+        }
     }
 
     public int lengthOfLongestSubstring(String s) {
@@ -251,8 +409,7 @@ public class DynamicProgramming {
             if (wordDict.contains(s.substring(start, end))) start = end;
         }
 
-        if (start >= s.length()) return true;
-        else return false;
+        return start >= s.length();
     }
 
     public boolean wordBreak(String s, Set<String> wordDict, int start) {
@@ -342,8 +499,7 @@ public class DynamicProgramming {
 
     public boolean canWinNimRecur(int n, int level) {
         if (n < 4) {
-            if (level % 2 == 0) return true;
-            else return false;
+            return level % 2 == 0;
         }
 
         return canWinNimRecur(n - 1, level + 1) ||
@@ -372,7 +528,7 @@ public class DynamicProgramming {
         //this.initBool();
         //memoArrBool = new boolean[n];
         memoArr = new int[n];
-        return canWinNimMemo(n - 1, 0) == 1 ? true : false;
+        return canWinNimMemo(n - 1, 0) == 1;
     }
 
 
@@ -504,7 +660,7 @@ public class DynamicProgramming {
             if (i == col) {
                 System.out.println("continue");
                 continue;
-            };
+            }
 
             memoGrid[row][i] = grid[row][i] + ((row > 0 && memoGrid[row - 1][i] != -1) ? memoGrid[row - 1][i] : paintHouseMemo(grid, row - 1, i));
             minCost = Math.min(minCost, memoGrid[row][i]);
@@ -540,7 +696,7 @@ public class DynamicProgramming {
 
 
 
-    public int minPathSum(int[][] grid) {
+    public int minPathSum2(int[][] grid) {
         //return minPathSumRecur(grid, 0, 0);
         return minPathSumMemo(grid, 0, 0);
     }

@@ -6,12 +6,12 @@ public class Test3 {
     public Test3() {
         //System.out.println(climbStairs(0, 3));
         //System.out.println(climbStairsTab(4));
-        int[] arr = new int[]{2,7,9,3,1};
+        int[] arr = new int[]{2, 7, 9, 3, 1};
         //System.out.println(houseRobber(arr, arr.length - 1));
         //System.out.println(houseRobberTab(arr));
         int[] nums = {2, 2, 3, 1, 3};
         //System.out.println(subarraySum(nums, 7));
-        char[][] board = {
+        /*char[][] board = {
                 {'5','3','.','.','7','.','.','.','.'},
                 {'6','.','.','1','9','5','.','.','.'},
                 {'.','9','8','.','.','.','.','6','.'},
@@ -24,6 +24,7 @@ public class Test3 {
         };
 
         System.out.println(isValidSudoku(board));
+        */
     }
 
     public boolean isValidSudoku(char[][] board) {

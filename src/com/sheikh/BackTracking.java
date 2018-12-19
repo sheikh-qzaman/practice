@@ -9,7 +9,7 @@ public class BackTracking {
         int[] nums = new int[] {2,5,2,1,2};
         //int[] nums = new int[] {10,1,2,7,6,1,5};
         //List<List<Integer>> list = combinationSum(nums, 8);
-        Utils.printList(combinationSum(nums, 5));
+        Utils.printListOfList(combinationSum(nums, 5));
         //List<String> list = generateParenthesis(3);
         char[][] board = {
                 {'A','B','C','E'},

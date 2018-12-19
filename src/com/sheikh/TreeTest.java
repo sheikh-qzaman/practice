@@ -11,10 +11,6 @@ public class TreeTest {
         /*Validate Binary Search Tree*/
         //int[] bst = {2, 2, 5, -1, -1, 4, 6, -1, -1, -1, -1, 3};
         //int[] bst = {10, 5, 15, -1, -1, 8, 20};
-        int[] bst = {1, 5, 15, -1, -1, 6, 20};
-        //int[] bst = {2, 1, 5};
-        TreeNode root = createTree(bst, 0);
-        System.out.println(isValidBST(root));
         //List<Integer> list = inorderTraversal(root);
         //System.out.println(inorderBST(root, new Ref<Integer>(Integer.MIN_VALUE)));
         /**/
@@ -25,11 +21,7 @@ public class TreeTest {
         System.out.println(symTree(root));
         */
 
-        /*Level order traversing
-        int[] tree = {3,9,20,-1,-1,15,7};
-        TreeNode2 root = createTree(tree, 0);
-        System.out.println(levelOrder(root));
-        */
+
 
         /*Max depth of binary tree
         //int[] tree = {3, 9, 20, -1, -1, 15, 7, -1, 17, -1, -1, 16};
@@ -64,6 +56,39 @@ public class TreeTest {
 
         /*Same Tree*/
         /**/
+
+        //int[] bst = {1, 5, 15, -1, -1, 6, 20};
+        //int[] bst = {2, 1, 4, -1, -1, 3, 5};
+        //int[] bst = {5, 1, 4, -1, -1, 3, 6};
+        int[] bst = {};
+        //TreeNode root = createTree(bst, 0);
+        //System.out.println(isValidBST(root));
+        //List<Integer> list = inorderTraversal(root);
+
+        /*Level order traversing*/
+        int[] tree = {3,9,20,-1,-1,15,7};
+        //int[] tree = {1, 2, 3, 4, 5};
+        //int[] tree = {};
+        TreeNode root = createTree(tree, 0);
+        //List<List<Integer>> lists = levelOrder(root);
+        List<List<Integer>> lists = zigzagLevelOrder(root);
+        /**/
+    }
+
+    public boolean isValidBST(TreeNode root) {
+        List<Integer> list = new LinkedList<>();
+        //inorderT(root, list);
+        list = inorderIter(root);
+        Integer prev = null;
+        for(Integer i : list) {
+            if (prev == null)
+                prev = i;
+            else if (prev.intValue() >= i.intValue())
+                return false;
+            else prev = i;
+        }
+
+        return true;
     }
 
     public List<Integer> inorderT(TreeNode t, List<Integer> list) {
@@ -177,29 +202,65 @@ public class TreeTest {
         else return 1 + Math.max(maxDepth(node.left), maxDepth(node.right));
     }
 
+    public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
+        if (root == null) return new ArrayList<>();
+        List<List<Integer>> lists = null;
+        List<Integer> list = new LinkedList<>();
+        Stack<TreeNode> stack1 = new Stack<>();
+        Stack<TreeNode> stack2 = new Stack<>();
+        stack1.push(root);
+        boolean fromStack1 = true;
+
+        while (!stack2.isEmpty() || !stack1.isEmpty()) {
+            TreeNode node = null;
+            if (fromStack1) {
+                node = stack1.pop();
+                if (node.left != null) stack2.push(node.left);
+                if (node.right != null) stack2.push(node.right);
+            } else {
+                node = stack2.pop();
+                if (node.right != null) stack1.push(node.right);
+                if (node.left != null) stack1.push(node.left);
+            }
+
+            list.add(node.val);
+            if ((!fromStack1 && stack2.isEmpty()) || (fromStack1 && stack1.isEmpty())) {
+                if (lists == null)
+                    lists = new LinkedList<>();
+                lists.add(list);
+                list = new LinkedList<>();
+                fromStack1 = stack2.isEmpty();
+            }
+        }
+
+        return lists;
+    }
+
     public List<List<Integer>> levelOrder(TreeNode root) {
         if (root == null) return new ArrayList<>();
-        List<List<Integer>> lists = new ArrayList<>();
+        List<List<Integer>> lists = null;
+        List<Integer> list = new LinkedList<>();
         Queue<TreeNode> q = new LinkedList<>();
         q.add(root);
-        ArrayList<Integer> list = null;
-        TreeNode dummy = new TreeNode(-1);
-        q.add(dummy);
+        q.add(null);
 
         while (!q.isEmpty()) {
             TreeNode node = q.poll();
-            if (node == null) continue;
-            if (node.val != -1) {
-                if (node.left != null) q.add(node.left);
-                if (node.right != null) q.add(node.right);
-                if (list == null) list = new ArrayList<>();
-                list.add(node.val);
-            } else {
+            if (node == null) {
+                if (q.size() != 0) q.add(null);
+                if (lists == null)
+                    lists = new LinkedList<>();
                 lists.add(list);
-                if (!q.isEmpty()) q.add(dummy);
-                list = null;
+                list = new LinkedList<>();
+            } else {
+                if (node.left != null)
+                    q.add(node.left);
+                if (node.right != null)
+                    q.add(node.right);
+                list.add(node.val);
             }
         }
+
         return lists;
     }
 
@@ -238,20 +299,20 @@ public class TreeTest {
     }
 
     public List<Integer> inorderIter(TreeNode root) {
-        if (root == null) return null;
+        if (root == null) return new LinkedList<>();
         List<Integer> list = new LinkedList<>();
         Stack<TreeNode> stack = new Stack<>();
+        TreeNode current = root;
 
-        stack.push(root);
-        while (!stack.isEmpty()) {
-            TreeNode node = stack.peek();
-            if (node.left != null) stack.push(node.left);
-            else {
-                node = stack.pop();
+        while (current != null || !stack.isEmpty()) {
+            if (current != null) {
+                stack.push(current);
+                current = current.left;
+            } else {
+                TreeNode node = stack.pop();
                 list.add(node.val);
+                current = node.right;
             }
-
-            if (node.right != null) stack.push(node.right);
         }
 
         return list;
@@ -284,11 +345,11 @@ public class TreeTest {
         return true;
     }
 
-    public boolean isValidBST(TreeNode root) {
+    public boolean isValidBST2(TreeNode root) {
         if (root == null) return true;
         else if (root.left != null && root.left.val >= root.val) return false;
         else if (root.right != null && root.right.val <= root.val) return false;
-        else return isValidBST(root.left) && isValidBST(root.right);
+        else return isValidBST2(root.left) && isValidBST2(root.right);
     }
 
     public TreeNode createTree(int[] tree, int i) {

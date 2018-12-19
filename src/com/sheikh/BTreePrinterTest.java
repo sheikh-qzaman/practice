@@ -111,7 +111,7 @@ class BTreePrinter {
 
             BTreePrinter.printWhitespaces(betweenSpaces);
         }
-        System.out.println("");
+        System.out.println();
 
         for (int i = 1; i <= endgeLines; i++) {
             for (int j = 0; j < nodes.size(); j++) {
@@ -136,7 +136,7 @@ class BTreePrinter {
                 BTreePrinter.printWhitespaces(endgeLines + endgeLines - i);
             }
 
-            System.out.println("");
+            System.out.println();
         }
 
         printNodeInternal(newNodes, level + 1, maxLevel);

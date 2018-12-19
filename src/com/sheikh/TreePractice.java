@@ -1,25 +1,10 @@
 package com.sheikh;
 
-import com.sun.tools.javac.util.ArrayUtils;
-
 import java.util.*;
 import java.util.LinkedList;
 import java.util.stream.Collectors;
 
 public class TreePractice {
-    public class TreeNode {
-        public TreeNode left;
-        public TreeNode right;
-        public int val;
-
-        public TreeNode(int val) {
-            this.val = val;
-        }
-
-        public String toString() {
-            return "" + this.val;
-        }
-    }
 
     public TreePractice() {
         TreeNode r1 = createTree(new int[] {1, 2, 6, 4, 5}, 0);
@@ -237,8 +222,7 @@ public class TreePractice {
     public boolean pathSumHelper(TreeNode root, int sum, int curSum) {
         if (root == null) return false;
         else if (root.left == null && root.right == null ) {
-            if (root.val + curSum == sum) return true;
-            else return false;
+            return root.val + curSum == sum;
         } else return pathSumHelper(root.left, sum, root.val + curSum) || pathSumHelper(root.right, sum, root.val + curSum);
     }
 
@@ -266,13 +250,12 @@ public class TreePractice {
     }
 
     public boolean isSymmetric(TreeNode root) {
-        return root == null ? false : isSymmetricHelper(root.left, root.right);
+        return root != null && isSymmetricHelper(root.left, root.right);
     }
 
     public boolean isSymmetricHelper(TreeNode n1, TreeNode n2) {
         if ((n1 == null || n2 == null)) {
-            if (n1 == n2) return true;
-            else return false;
+            return n1 == n2;
         } else if (n1.val != n2.val) return false;
 
         return isSymmetricHelper(n1.left, n2.right) && isSymmetricHelper(n1.right, n2.left);
